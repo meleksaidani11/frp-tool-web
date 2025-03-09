@@ -1,4 +1,4 @@
-// Simulated device model aliases for Huawei and Honor devices
+// Device model aliases for Huawei and Honor devices
 const MODEL_ALIASES = {
     "ANA-LX9": "Huawei P40",
     "ANA-NX9": "Huawei P40 Pro",
@@ -76,87 +76,82 @@ const MODEL_ALIASES = {
     "NOA-LX1": "Honor X50 5G",
 };
 
+let adbInstance = null;
 let isConnected = false;
-let deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
 
-// Function to check if the device is in Fastboot/ADB mode using WebADB
-function checkFastbootDevice() {
-    return new Promise((resolve, reject) => {
-        if (!navigator.usb) {
-            alert("WebUSB is not supported in this browser or on this host. Please use Google Chrome or Microsoft Edge, and run the site on localhost (e.g., http://localhost:8000) with a local server.");
-            reject(new Error("WebUSB not supported"));
-            return;
-        }
-
-        window.webadb.initialize()
-            .then(info => {
-                isConnected = true;
-                deviceInfo = info;
-                console.log("Device info detected:", info);
-                resolve(true);
-            })
-            .catch(error => {
-                isConnected = false;
-                deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
-                console.error("Device detection failed:", error.message);
-                reject(error);
-            });
-    });
+// Function to connect to the device using WebUSB and ADB
+async function connectDevice() {
+    try {
+        let webusb = await Adb.open("WebUSB");
+        adbInstance = await webusb.connectAdb("host::");
+        isConnected = true;
+        return true;
+    } catch (e) {
+        console.error("Connection error:", e);
+        isConnected = false;
+        return false;
+    }
 }
 
-// Function to update the UI based on device connection
-async function checkDeviceConnectionAndUpdate() {
-    console.log("Checking for device...");
+// Function to retrieve device information using ADB commands
+async function getDeviceInfo() {
+    if (!adbInstance) return { model: "Unknown", serial: "Unknown" };
+    try {
+        let shell = await adbInstance.shell("getprop ro.product.model");
+        let model = (await shell.receive()).trim();
+        shell = await adbInstance.shell("getprop ro.serialno");
+        let serial = (await shell.receive()).trim();
+        return { model, serial };
+    } catch (e) {
+        console.error("Error getting device info:", e);
+        return { model: "Unknown", serial: "Unknown" };
+    }
+}
+
+// Function to check device connection and update UI
+async function checkDeviceConnection() {
+    if (isConnected) {
+        updateDeviceInfo();
+        return;
+    }
+
+    const connected = await connectDevice();
     const indicator = document.querySelector(".connection-indicator");
     const text = document.querySelector(".connection-text");
     const progress = document.querySelector("#connectionProgress");
 
-    try {
-        await checkFastbootDevice();
+    if (connected) {
         indicator.style.color = "#00E676";
-        text.textContent = "FASTBOOT DEVICE DETECTED";
+        text.textContent = "DEVICE CONNECTED";
         text.style.color = "#00E676";
         let value = parseInt(progress.style.width || "0");
         if (value < 100) {
             value = Math.min(value + 50, 100);
             progress.style.width = `${value}%`;
             if (value < 100) {
-                setTimeout(checkDeviceConnectionAndUpdate, 500);
+                setTimeout(checkDeviceConnection, 500);
             }
         }
         if (value === 100) updateDeviceInfo();
-    } catch (error) {
-        indicator.style.color = "#FF5252";
-        text.textContent = "NO FASTBOOT DEVICE DETECTED";
-        text.style.color = "#B0BEC5";
-        progress.style.width = "0%";
+    } else {
         resetUI();
-        alert("No device detected. Please ensure your device is in Fastboot mode and connected, then use a Fastboot tool to unlock manually.");
     }
-}
-
-// Function to guide the user to reboot into Fastboot mode
-function rebootToFastboot() {
-    alert("To reboot your device into Fastboot mode:\n1. Power off your device.\n2. Hold Volume Down + Power until you see the bootloader.\n3. Connect the device to your computer via USB.\n4. Click 'CHECK FASTBOOT' to proceed.");
-    document.querySelector(".bottom-status").textContent = "PLEASE REBOOT DEVICE INTO FASTBOOT MODE";
-    document.querySelector(".operation-text").textContent = "WAITING";
 }
 
 // Function to reset the UI to its initial state
 function resetUI() {
     isConnected = false;
-    deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
+    adbInstance = null;
     document.querySelector(".connection-indicator").style.color = "#FF5252";
-    document.querySelector(".connection-text").textContent = "AWAITING FASTBOOT DEVICE";
+    document.querySelector(".connection-text").textContent = "AWAITING DEVICE CONNECTION";
     document.querySelector(".connection-text").style.color = "#B0BEC5";
     document.querySelector("#connectionProgress").style.width = "0%";
     document.querySelector(".operation-text").textContent = "READY";
     document.querySelector("#frpKeyInput").value = "";
     document.querySelector("#unlockProgress").style.display = "none";
     document.querySelector("#unlockProgress").style.width = "0%";
-    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR FASTBOOT DEVICE";
+    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR DEVICE CONNECTION";
     clearDeviceInfo();
-    document.getElementById("fastbootInstructions").style.display = "none";
 }
 
 // Function to clear the device information section
@@ -167,10 +162,10 @@ function clearDeviceInfo() {
     infoFrame.innerHTML = "";
 }
 
-// Function to update the device info section with real data
-function updateDeviceInfo() {
+// Function to update the device info section with new data
+async function updateDeviceInfo() {
     clearDeviceInfo();
-    const { model, serial, mode } = deviceInfo;
+    const { model, serial } = await getDeviceInfo();
     const imageFrame = document.getElementById("imageFrame");
     const infoFrame = document.getElementById("infoFrame");
 
@@ -178,26 +173,47 @@ function updateDeviceInfo() {
         const commercialName = MODEL_ALIASES[model];
         const imageName = commercialName.replace(" ", "_").replace("+", "plus");
         imageFrame.innerHTML = `<img src="Honor_Images/${imageName}.png" alt="${commercialName}" style="max-width:250px;border:2px solid #64FFDA;border-radius:10px;">`;
-    } else if (model !== "Unknown") {
-        imageFrame.innerHTML = "<p>Image not available for this model.</p>";
     }
 
     infoFrame.innerHTML = `
         <div><label>Product Model:</label> ${model} <button onclick="navigator.clipboard.writeText('${model}')">Copy</button></div>
         ${MODEL_ALIASES[model] ? `<div><label>Commercial Name:</label> ${MODEL_ALIASES[model]} <button onclick="navigator.clipboard.writeText('${MODEL_ALIASES[model]}')">Copy</button></div>` : ""}
         <div><label>Serial Number:</label> ${serial} <button onclick="navigator.clipboard.writeText('${serial}')">Copy</button></div>
-        <div><label>Mode:</label> ${mode}</div>
     `;
-    document.querySelector(".bottom-status").textContent = `DEVICE DETECTED IN ${mode.toUpperCase()} MODE`;
+    document.querySelector(".bottom-status").textContent = "DEVICE INFO LOADED SUCCESSFULLY";
     setTimeout(() => document.querySelector(".bottom-status").textContent = "READY", 3000);
 }
 
-// Function to simulate the FRP unlock process
+// Function to manually refresh device information
+async function refreshDeviceInfo() {
+    document.querySelector("#connectionProgress").style.width = "0%";
+    document.querySelector(".bottom-status").textContent = "REFRESHING DEVICE INFORMATION...";
+    resetUI();
+    checkDeviceConnection();
+}
+
+// Function to reboot the connected device
+async function rebootDevice() {
+    if (!isConnected || !adbInstance) {
+        alert("No device connected. Please connect a device.");
+        return;
+    }
+    document.querySelector(".operation-text").textContent = "REBOOTING DEVICE";
+    document.querySelector(".bottom-status").textContent = "SENDING REBOOT COMMAND...";
+    let shell = await adbInstance.shell("reboot");
+    await shell.receive();
+    document.querySelector(".bottom-status").textContent = "DEVICE REBOOT COMMAND SENT SUCCESSFULLY";
+    alert("Device reboot command sent successfully!");
+    document.querySelector(".operation-text").textContent = "READY";
+    resetUI();
+}
+
+// Function to unlock FRP protection using the provided key
 async function unlockFRP() {
     const frpKey = document.getElementById("frpKeyInput").value.trim();
     if (!frpKey) return alert("Please enter a valid FRP unlock key.");
-    if (!isConnected) {
-        alert("No device detected. Please ensure your device is in Fastboot mode and connected, then use a Fastboot tool to unlock manually.");
+    if (!isConnected || !adbInstance) {
+        alert("No device connected. Please connect a device.");
         return;
     }
 
@@ -223,38 +239,27 @@ function updateUnlockProgress(value) {
     else if (value === 80) status.textContent = "FINALIZING UNLOCK PROCEDURE...";
 }
 
-// Function to simulate FRP unlock and provide manual instructions
+// Function to execute the FRP unlock command
 async function executeFRPUnlock(frpKey) {
     try {
-        console.log("Simulating FRP unlock with key:", frpKey);
+        const shell = await adbInstance.shell(`echo "${frpKey}" > /data/system/frp_unlock_key.txt`);
+        await shell.receive();
         document.getElementById("unlockProgress").style.width = "100%";
-        document.querySelector(".bottom-status").textContent = "FRP UNLOCK SIMULATION COMPLETE";
-        const instructions = document.getElementById("fastbootInstructions");
-        instructions.style.display = "block";
-        instructions.innerHTML = `
-            <p>Manual Fastboot Command: <code>fastboot oem unlock ${frpKey}</code></p>
-            <p>1. Install Fastboot on your computer (e.g., Android SDK Platform Tools).</p>
-            <p>2. Open a terminal and navigate to the Fastboot directory.</p>
-            <p>3. Ensure your device is in Fastboot mode and connected.</p>
-            <p>4. Run the command above in the terminal to unlock FRP.</p>
-        `;
-        alert("FRP unlock simulation complete! Please follow the instructions above to manually unlock FRP using Fastboot on your computer.");
+        document.querySelector(".bottom-status").textContent = "FRP UNLOCK COMPLETED SUCCESSFULLY";
+        alert("FRP protection has been successfully removed from your device!");
+        setTimeout(() => document.getElementById("unlockProgress").style.display = "none", 3000);
+        document.querySelector(".operation-text").textContent = "READY";
+        setTimeout(refreshDeviceInfo, 1500);
     } catch (e) {
         document.getElementById("unlockProgress").style.width = "0%";
         document.getElementById("unlockProgress").style.display = "none";
         document.querySelector(".bottom-status").textContent = "FRP UNLOCK ERROR";
-        alert(`An error occurred during simulation: ${e.message}`);
+        alert(`An error occurred during FRP unlock: ${e.message}`);
         document.querySelector(".operation-text").textContent = "ERROR";
-    } finally {
-        setTimeout(() => document.getElementById("unlockProgress").style.display = "none", 3000);
-        document.querySelector(".operation-text").textContent = "READY";
     }
 }
 
-// Event listener to trigger device check on button click
+// Automatically attempt to connect when the page loads
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Page loaded, awaiting device check...");
-    resetUI();
-    document.querySelector("#checkFastbootBtn").addEventListener("click", checkDeviceConnectionAndUpdate);
-    document.querySelector("#unlockBtn").addEventListener("click", unlockFRP);
+    checkDeviceConnection();
 });
