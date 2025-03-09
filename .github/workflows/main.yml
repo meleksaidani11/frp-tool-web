@@ -25,34 +25,19 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Determine working directory
+      - name: Determine working directory and list files
         run: |
           echo "Current directory: $(pwd)"
-          echo "Listing all files in current directory (case-sensitive):"
+          echo "Listing all files in current directory:"
           ls -la .
           echo "Listing all files recursively:"
-          find . -type f
-          echo "Checking specific files:"
-          ls -l ./index.html || echo "index.html not found"
-          ls -l ./styles.css || echo "styles.css not found"
-          ls -l ./script.js || echo "script.js not found"
-          ls -l ./logo.png || echo "logo.png not found"
-          ls -l ./telegram.png || echo "telegram.png not found"
-          ls -l ./Honor_Images/ || echo "Honor_Images directory not found"
-          ls -l ./.nojekyll || echo ".nojekyll not found"
+          find . -type f || echo "No files found recursively"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
-          path: |
-            ./index.html
-            ./styles.css
-            ./script.js
-            ./logo.png
-            ./telegram.png
-            ./Honor_Images/
-            ./.nojekyll
+          path: ./
           if-no-files-found: error
 
       - name: Deploy to GitHub Pages
