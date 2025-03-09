@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HONOR FRP TOOL • BY BEUNLOCKER</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/gh/webadb/webadb.js@master/webadb.js"></script>
 </head>
 <body>
     <div class="main-container">
@@ -26,7 +25,7 @@
         <!-- Status Panel -->
         <div class="status-panel">
             <span class="connection-indicator">•</span>
-            <span class="connection-text">AWAITING DEVICE CONNECTION</span>
+            <span class="connection-text">AWAITING FASTBOOT DEVICE</span>
             <div class="spacer"></div>
             <span class="operation-text">READY</span>
         </div>
@@ -44,8 +43,8 @@
                 </div>
                 <div class="progress-bar" id="connectionProgress"></div>
                 <div class="commands">
-                    <button class="refresh-btn" onclick="refreshDeviceInfo()">REFRESH</button>
-                    <button class="reboot-btn" onclick="rebootDevice()">REBOOT</button>
+                    <button class="refresh-btn" onclick="checkFastbootDevice()">CHECK FASTBOOT</button>
+                    <button class="reboot-btn" onclick="rebootToFastboot()">REBOOT TO FASTBOOT</button>
                 </div>
             </div>
 
@@ -58,11 +57,17 @@
                 <div class="progress-bar" id="unlockProgress" style="display:none;"></div>
                 <div class="spacer"></div>
                 <button class="unlock-btn" onclick="unlockFRP()">UNLOCK FRP PROTECTION</button>
+                <div id="fastbootInstructions" style="display:none; margin-top: 10px; color: #B0BEC5; font-size: 12px;">
+                    <p>Manual Fastboot Command: <code>fastboot oem unlock [FRP_KEY]</code></p>
+                    <p>1. Install Fastboot on your computer (e.g., Android SDK Platform Tools).</p>
+                    <p>2. Open a terminal and navigate to the Fastboot directory.</p>
+                    <p>3. Connect your device in Fastboot mode and run the command above.</p>
+                </div>
             </div>
         </div>
 
         <!-- Bottom Status -->
-        <p class="bottom-status">SYSTEM READY • WAITING FOR DEVICE CONNECTION</p>
+        <p class="bottom-status">SYSTEM READY • WAITING FOR FASTBOOT DEVICE</p>
         <p class="copyright">© 2025 HONOR FRP TOOL BY BEUNLOCKER</p>
     </div>
     <script src="script.js"></script>
