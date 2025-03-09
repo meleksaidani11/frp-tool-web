@@ -45,17 +45,11 @@ jobs:
             git commit -m "Add .nojekyll for GitHub Pages" || echo "Commit failed, proceeding anyway"
           fi
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
           path: ./
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Delay for artifact availability
-        run: sleep 5
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v3
