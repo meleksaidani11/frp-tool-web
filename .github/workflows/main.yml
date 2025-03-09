@@ -25,28 +25,27 @@ jobs:
         with:
           node-version: '16'
 
-      - name: List files in workspace
+      - name: Determine working directory
         run: |
           echo "Current directory: $(pwd)"
-          echo "Listing /github/workspace/:"
-          ls -la /github/workspace/
-          echo "Listing current directory (.) :"
-          ls -la .
-          echo "Listing files to upload (should include index.html, styles.css, etc.):"
-          find . -type f
+          echo "Repository path: $(pwd)/frp-tool-web"
+          echo "Listing repository directory:"
+          ls -la $(pwd)/frp-tool-web
+          echo "Listing files to upload:"
+          find $(pwd)/frp-tool-web -type f
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: |
-            index.html
-            styles.css
-            script.js
-            logo.png
-            telegram.png
-            Honor_Images/
-            .nojekyll
+            $(pwd)/frp-tool-web/index.html
+            $(pwd)/frp-tool-web/styles.css
+            $(pwd)/frp-tool-web/script.js
+            $(pwd)/frp-tool-web/logo.png
+            $(pwd)/frp-tool-web/telegram.png
+            $(pwd)/frp-tool-web/Honor_Images/
+            $(pwd)/frp-tool-web/.nojekyll
           if-no-files-found: error
 
       - name: Deploy to GitHub Pages
