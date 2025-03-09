@@ -1,112 +1,245 @@
-body {
-    margin: 0;
-    padding: 20px;
-    background: linear-gradient(to bottom right, #1A237E, #311B92, #4A148C);
-    font-family: Arial, sans-serif;
-    color: #fff;
+// Simulated device model aliases for Huawei and Honor devices
+const MODEL_ALIASES = {
+    "ANA-LX9": "Huawei P40",
+    "ANA-NX9": "Huawei P40 Pro",
+    "ELS-NX9": "Huawei P40 Pro+",
+    "JNY-LX1": "Huawei nova 7",
+    "JEF-LX1": "Huawei Enjoy 20 Plus 5G",
+    "HLK-LX1": "Huawei nova 8i",
+    "DRA-LX9": "Huawei Mate 40 Pro",
+    "NOH-AN00": "Huawei Mate 40 Pro+",
+    "PGU-LX1": "Huawei P50",
+    "PGU-AN00": "Huawei P50 Pro",
+    "VOG-LX9": "Huawei nova 9",
+    "EVE-LX9": "Huawei nova Y61",
+    "BRQ-LX1": "Huawei nova 10",
+    "BRQ-AN00": "Huawei nova 10 Pro",
+    "LNA-LX1": "Huawei nova Y70",
+    "ALP-LX9": "Huawei Mate X2",
+    "LGI-LX3": "Huawei Mate Xs 2",
+    "HMA-LX9": "Huawei Mate 50 Pro",
+    "CDY-L21": "Huawei nova 11",
+    "LON-LX1": "Huawei nova 12",
+    "LON-AN00": "Huawei nova 12 Pro",
+    "NOV-LX9": "Huawei nova 13",
+    "NOV-AN00": "Huawei nova 13 Pro",
+    "ANE-LX1": "Huawei nova 7i",
+    "TET-LX3": "Honor 30",
+    "NOH-LX1": "Honor 30 Pro+",
+    "CDY-LX1": "Honor 50",
+    "CDY-AN00": "Honor 50 5G",
+    "TET-AN00": "Honor 30 5G",
+    "ELY-LX9": "Honor Magic 4",
+    "ELY-AN00": "Honor Magic 4 5G",
+    "PGZ-AN00": "Honor Magic 4 Pro",
+    "MRD-LX1": "Honor Magic 5",
+    "MRD-AN00": "Honor Magic 5 Pro",
+    "VNE-LX1": "Honor Magic 5 Lite",
+    "LGE-AN00": "Honor Magic 6",
+    "LGE-LX1": "Honor Magic 6 Pro",
+    "VNE-LX3": "Honor Magic 6 Lite",
+    "HOB-AN00": "Honor Magic 7",
+    "HOB-LX1": "Honor Magic 7 Pro",
+    "NTH-AN00": "Honor Magic 7 Lite",
+    "PHA-LX1": "Honor 60",
+    "PHA-AN00": "Honor 60 Pro",
+    "DAB-AN00": "Honor 70",
+    "DAB-LX1": "Honor 70 5G",
+    "LRA-AN00": "Honor 80",
+    "LRA-LX1": "Honor 80 5G",
+    "MAA-LX1": "Honor 90",
+    "MAA-AN00": "Honor 90 Pro",
+    "NTH-LX1": "Honor 90 Lite",
+    "XKG-AN00": "Honor X8",
+    "XKG-LX1": "Honor X8 5G",
+    "XKM-AN10": "Honor X9",
+    "XKM-LX1": "Honor X9 5G",
+    "YKG-LX1": "Honor X10",
+    "YKG-AN10": "Honor X10 5G",
+    "ZAD-LX1": "Honor Play 20",
+    "ZAD-AN00": "Honor Play 20 5G",
+    "FNE-AN00": "Honor Magic V",
+    "FNE-LX1": "Honor Magic V 5G",
+    "PSN-LX1": "Honor Magic V2",
+    "PSN-AN00": "Honor Magic V2 5G",
+    "QTF-AN00": "Honor Magic V3",
+    "QTF-LX1": "Honor Magic V3 5G",
+    "JAD-LX1": "Honor Play 5",
+    "JAD-AN00": "Honor Play 5 5G",
+    "KSA-LX1": "Honor X20",
+    "KSA-AN00": "Honor X20 5G",
+    "LUA-AN00": "Honor X30",
+    "LUA-LX1": "Honor X30 5G",
+    "MWD-AN10": "Honor X40",
+    "MWD-LX1": "Honor X40 5G",
+    "NOA-AN00": "Honor X50",
+    "NOA-LX1": "Honor X50 5G",
+};
+
+let isConnected = false;
+let deviceInfo = { model: "Unknown", serial: "Unknown" };
+
+// Function to check if the device is in Fastboot mode (manual confirmation removed)
+function checkFastbootDevice() {
+    return new Promise((resolve) => {
+        alert("Warning: This tool cannot automatically detect your device. Please ensure your device is in Fastboot mode and connected to your computer. Use a Fastboot tool (e.g., Android SDK Platform Tools) to verify connection. Click 'OK' to proceed with manual simulation.");
+        isConnected = false; // Do not assume connection
+        deviceInfo = { model: "Unknown", serial: "Unknown" };
+        resolve(false); // No automatic connection
+    });
 }
 
-.main-container {
-    max-width: 900px;
-    min-height: 650px;
-    margin: 0 auto;
+// Function to update the UI based on Fastboot connection
+async function checkDeviceConnectionAndUpdate() {
+    if (isConnected) {
+        console.log("Device already connected, updating info...");
+        updateDeviceInfo();
+        return;
+    }
+
+    console.log("Checking Fastboot device...");
+    const connected = await checkFastbootDevice();
+    const indicator = document.querySelector(".connection-indicator");
+    const text = document.querySelector(".connection-text");
+    const progress = document.querySelector("#connectionProgress");
+
+    if (connected) {
+        indicator.style.color = "#00E676";
+        text.textContent = "FASTBOOT DEVICE DETECTED";
+        text.style.color = "#00E676";
+        let value = parseInt(progress.style.width || "0");
+        if (value < 100) {
+            value = Math.min(value + 50, 100);
+            progress.style.width = `${value}%`;
+            if (value < 100) {
+                setTimeout(checkDeviceConnectionAndUpdate, 500);
+            }
+        }
+        if (value === 100) updateDeviceInfo();
+    } else {
+        indicator.style.color = "#FF5252";
+        text.textContent = "NO FASTBOOT DEVICE DETECTED";
+        text.style.color = "#B0BEC5";
+        progress.style.width = "0%";
+        resetUI();
+    }
 }
 
-/* Header */
-.header {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(to right, #6200EA, #304FFE);
-    border-radius: 15px;
-    border: 1px solid #7B1FA2;
-    padding: 10px 15px;
-    min-height: 80px;
-}
-.lightning { font-size: 24px; color: #FF9800; }
-.logo { width: 80px; height: 80px; object-fit: contain; }
-.brand { font-size: 20px; font-weight: bold; color: #FFFFFF; margin-right: 15px; letter-spacing: 2px; }
-.website { font-size: 18px; font-weight: bold; color: #FFFFFF; text-decoration: underline; cursor: pointer; }
-.spacer { flex-grow: 1; }
-.telegram-btn {
-    width: 40px; height: 40px; background-color: #0088CC; border-radius: 20px; border: none; cursor: pointer;
-}
-.telegram-btn:hover { background-color: #0077B6; }
-.telegram-btn:active { background-color: #006699; }
-.telegram-icon { width: 30px; height: 30px; }
-
-/* Status Panel */
-.status-panel {
-    display: flex; align-items: center; background-color: rgba(26, 35, 126, 0.7);
-    border-radius: 10px; border: 1px solid #3F51B5; padding: 10px; margin-top: 15px;
-}
-.connection-indicator { font-size: 24px; color: #FF5252; }
-.connection-text { font-size: 12px; font-weight: bold; color: #B0BEC5; margin-left: 5px; }
-.operation-text { font-size: 12px; color: #64FFDA; }
-
-/* Content Area */
-.content-area { display: flex; gap: 15px; margin-top: 15px; }
-
-/* Left Panel */
-.left-panel {
-    flex: 1; background-color: rgba(49, 27, 146, 0.7); border-radius: 15px;
-    border: 1px solid #512DA8; padding: 15px;
-}
-.panel-header { text-align: center; font-size: 14px; font-weight: bold; color: #64FFDA; }
-.device-info-content {
-    display: flex; background-color: rgba(66, 66, 66, 0.4); border-radius: 10px;
-    border: 1px solid #7E57C2; padding: 15px; margin-top: 10px;
-}
-.image-frame { max-width: 300px; text-align: center; padding: 10px; }
-.info-frame { flex: 1; padding: 10px; }
-.progress-bar {
-    height: 20px; border: 1px solid #7E57C2; border-radius: 5px; background-color: rgba(66, 66, 66, 0.4);
-    margin-top: 10px; overflow: hidden;
-}
-.progress-bar::after {
-    content: ''; display: block; height: 100%; width: 0%;
-    background: linear-gradient(to right, #00BFA5, #64FFDA); transition: width 0.5s;
-}
-.commands { display: flex; gap: 10px; margin-top: 10px; }
-.refresh-btn, .reboot-btn {
-    flex: 1; padding: 10px; border-radius: 8px; color: #FFFFFF; font-weight: bold; cursor: pointer;
-    border: 1px solid #7E57C2;
-}
-.refresh-btn { background-color: #4527A0; }
-.refresh-btn:hover { background-color: #5E35B1; }
-.refresh-btn:active { background-color: #311B92; }
-.reboot-btn { background-color: #00BFA5; }
-.reboot-btn:hover { background-color: #00E5BF; }
-.reboot-btn:active { background-color: #008975; }
-
-/* Right Panel */
-.right-panel {
-    flex: 1; background-color: rgba(74, 20, 140, 0.7); border-radius: 15px;
-    border: 1px solid #6A1B9A; padding: 15px; display: flex; flex-direction: column;
-}
-.frp-header { font-size: 16px; color: #FF4081; }
-.frp-description { color: #B0BEC5; text-align: center; margin: 10px 0; }
-.key-label { font-size: 12px; font-weight: bold; color: #64FFDA; }
-#frpKeyInput {
-    width: 100%; padding: 15px; background-color: rgba(66, 66, 66, 0.4); border-radius: 10px;
-    border: 1px solid #7E57C2; color: #FFFFFF; font-size: 14px; margin-top: 5px;
-}
-#frpKeyInput:focus { border: 2px solid #FFC400; outline: none; }
-#unlockProgress::after {
-    background: linear-gradient(to right, #FF4081, #F50057);
-}
-.unlock-btn {
-    padding: 15px; background: linear-gradient(to right, #FF4081, #F50057); border-radius: 25px;
-    color: #FFFFFF; font-weight: bold; font-size: 14px; border: 1px solid #C51162; cursor: pointer;
-    margin-top: auto;
-}
-.unlock-btn:hover { background: linear-gradient(to right, #F50057, #C51162); }
-.unlock-btn:active { background: linear-gradient(to right, #C51162, #880E4F); }
-#fastbootInstructions code {
-    background-color: rgba(66, 66, 66, 0.4);
-    padding: 2px 5px;
-    border-radius: 3px;
+// Function to guide the user to reboot into Fastboot mode
+function rebootToFastboot() {
+    alert("To reboot your device into Fastboot mode:\n1. Power off your device.\n2. Hold Volume Down + Power until you see the bootloader.\n3. Connect the device to your computer via USB.\n4. Use a Fastboot tool on your computer to verify the connection.\n5. Click 'CHECK FASTBOOT' to proceed.");
+    document.querySelector(".bottom-status").textContent = "PLEASE REBOOT DEVICE INTO FASTBOOT MODE";
+    document.querySelector(".operation-text").textContent = "WAITING";
 }
 
-/* Bottom Status */
-.bottom-status { text-align: center; font-size: 10px; color: #B0BEC5; margin-top: 15px; }
-.copyright { text-align: center; color: #78909C; margin-top: 5px; }
+// Function to reset the UI to its initial state
+function resetUI() {
+    isConnected = false;
+    deviceInfo = { model: "Unknown", serial: "Unknown" };
+    document.querySelector(".connection-indicator").style.color = "#FF5252";
+    document.querySelector(".connection-text").textContent = "AWAITING FASTBOOT DEVICE";
+    document.querySelector(".connection-text").style.color = "#B0BEC5";
+    document.querySelector("#connectionProgress").style.width = "0%";
+    document.querySelector(".operation-text").textContent = "READY";
+    document.querySelector("#frpKeyInput").value = "";
+    document.querySelector("#unlockProgress").style.display = "none";
+    document.querySelector("#unlockProgress").style.width = "0%";
+    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR FASTBOOT DEVICE";
+    clearDeviceInfo();
+    document.getElementById("fastbootInstructions").style.display = "none";
+}
+
+// Function to clear the device information section
+function clearDeviceInfo() {
+    const imageFrame = document.getElementById("imageFrame");
+    const infoFrame = document.getElementById("infoFrame");
+    imageFrame.innerHTML = "<p>No device connected.</p>";
+    infoFrame.innerHTML = "";
+}
+
+// Function to update the device info section with simulated data
+async function updateDeviceInfo() {
+    clearDeviceInfo();
+    const { model, serial } = deviceInfo;
+    const imageFrame = document.getElementById("imageFrame");
+    const infoFrame = document.getElementById("infoFrame");
+
+    if (MODEL_ALIASES[model]) {
+        const commercialName = MODEL_ALIASES[model];
+        const imageName = commercialName.replace(" ", "_").replace("+", "plus");
+        imageFrame.innerHTML = `<img src="Honor_Images/${imageName}.png" alt="${commercialName}" style="max-width:250px;border:2px solid #64FFDA;border-radius:10px;">`;
+    }
+
+    infoFrame.innerHTML = `
+        <div><label>Product Model:</label> ${model} <button onclick="navigator.clipboard.writeText('${model}')">Copy</button></div>
+        ${MODEL_ALIASES[model] ? `<div><label>Commercial Name:</label> ${MODEL_ALIASES[model]} <button onclick="navigator.clipboard.writeText('${MODEL_ALIASES[model]}')">Copy</button></div>` : ""}
+        <div><label>Serial Number:</label> ${serial} <button onclick="navigator.clipboard.writeText('${serial}')">Copy</button></div>
+    `;
+    document.querySelector(".bottom-status").textContent = "DEVICE INFO LOADED SUCCESSFULLY (MANUAL SIMULATION)";
+    setTimeout(() => document.querySelector(".bottom-status").textContent = "READY", 3000);
+}
+
+// Function to simulate the FRP unlock process
+async function unlockFRP() {
+    const frpKey = document.getElementById("frpKeyInput").value.trim();
+    if (!frpKey) return alert("Please enter a valid FRP unlock key.");
+    if (!isConnected) {
+        alert("No Fastboot device detected. Please ensure your device is in Fastboot mode and connected, then use a Fastboot tool to unlock manually.");
+        return;
+    }
+
+    const progress = document.getElementById("unlockProgress");
+    progress.style.display = "block";
+    document.querySelector(".operation-text").textContent = "UNLOCKING FRP";
+    document.querySelector(".bottom-status").textContent = "INITIALIZING FRP UNLOCK PROCEDURE...";
+
+    for (let step = 1; step <= 4; step++) {
+        setTimeout(() => updateUnlockProgress(step * 20), step * 500);
+    }
+    setTimeout(() => executeFRPUnlock(frpKey), 2500);
+}
+
+// Function to update the unlock progress bar
+function updateUnlockProgress(value) {
+    const progress = document.getElementById("unlockProgress");
+    progress.style.width = `${value}%`;
+    const status = document.querySelector(".bottom-status");
+    if (value === 20) status.textContent = "VALIDATING FRP KEY...";
+    else if (value === 40) status.textContent = "PREPARING DEVICE FOR UNLOCK...";
+    else if (value === 60) status.textContent = "SENDING UNLOCK COMMAND...";
+    else if (value === 80) status.textContent = "FINALIZING UNLOCK PROCEDURE...";
+}
+
+// Function to simulate FRP unlock and provide manual instructions
+async function executeFRPUnlock(frpKey) {
+    try {
+        console.log("Simulating FRP unlock with key:", frpKey);
+        document.getElementById("unlockProgress").style.width = "100%";
+        document.querySelector(".bottom-status").textContent = "FRP UNLOCK SIMULATION COMPLETE";
+        const instructions = document.getElementById("fastbootInstructions");
+        instructions.style.display = "block";
+        instructions.innerHTML = `
+            <p>Manual Fastboot Command: <code>fastboot oem unlock ${frpKey}</code></p>
+            <p>1. Install Fastboot on your computer (e.g., Android SDK Platform Tools).</p>
+            <p>2. Open a terminal and navigate to the Fastboot directory.</p>
+            <p>3. Ensure your device is in Fastboot mode and connected.</p>
+            <p>4. Run the command above in the terminal to unlock FRP.</p>
+        `;
+        alert("FRP unlock simulation complete! Please follow the instructions above to manually unlock FRP using Fastboot on your computer.");
+    } catch (e) {
+        document.getElementById("unlockProgress").style.width = "0%";
+        document.getElementById("unlockProgress").style.display = "none";
+        document.querySelector(".bottom-status").textContent = "FRP UNLOCK ERROR";
+        alert(`An error occurred during simulation: ${e.message}`);
+        document.querySelector(".operation-text").textContent = "ERROR";
+    } finally {
+        setTimeout(() => document.getElementById("unlockProgress").style.display = "none", 3000);
+        document.querySelector(".operation-text").textContent = "READY";
+    }
+}
+
+// Automatically check for a Fastboot device when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Page loaded, initiating Fastboot device check...");
+    checkDeviceConnectionAndUpdate();
+});
