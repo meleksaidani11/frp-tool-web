@@ -1,29 +1,24 @@
-name: Deploy Static Site
+name: Build and Deploy
 
 on:
   push:
-    branches: [main]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches:
+      - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages  
-      url: ${{ steps.deployment.outputs.page_url }}  
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v3
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
         with:
-          path: ./ 
-
+          source: ./
+          destination: ./_site
+      - name: Deploy
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./_site
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
