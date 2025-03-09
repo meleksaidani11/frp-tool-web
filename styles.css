@@ -79,24 +79,27 @@ const MODEL_ALIASES = {
 let isConnected = false;
 let deviceInfo = { model: "Unknown", serial: "Unknown" };
 
-// Function to check if the device is in Fastboot mode (manual confirmation removed)
+// Function to check if the device is in Fastboot mode (manual check with confirmation)
 function checkFastbootDevice() {
     return new Promise((resolve) => {
-        alert("Warning: This tool cannot automatically detect your device. Please ensure your device is in Fastboot mode and connected to your computer. Use a Fastboot tool (e.g., Android SDK Platform Tools) to verify connection. Click 'OK' to proceed with manual simulation.");
-        isConnected = false; // Do not assume connection
-        deviceInfo = { model: "Unknown", serial: "Unknown" };
-        resolve(false); // No automatic connection
+        if (isConnected) {
+            resolve(true);
+            return;
+        }
+        if (confirm("Please ensure your device is in Fastboot mode and connected to your computer using a USB cable. Has this been done?")) {
+            isConnected = true;
+            deviceInfo = { model: "Fastboot Device", serial: "FASTBOOT-12345" }; // Placeholder data
+            resolve(true);
+        } else {
+            isConnected = false;
+            deviceInfo = { model: "Unknown", serial: "Unknown" };
+            resolve(false);
+        }
     });
 }
 
 // Function to update the UI based on Fastboot connection
 async function checkDeviceConnectionAndUpdate() {
-    if (isConnected) {
-        console.log("Device already connected, updating info...");
-        updateDeviceInfo();
-        return;
-    }
-
     console.log("Checking Fastboot device...");
     const connected = await checkFastbootDevice();
     const indicator = document.querySelector(".connection-indicator");
@@ -168,6 +171,8 @@ async function updateDeviceInfo() {
         const commercialName = MODEL_ALIASES[model];
         const imageName = commercialName.replace(" ", "_").replace("+", "plus");
         imageFrame.innerHTML = `<img src="Honor_Images/${imageName}.png" alt="${commercialName}" style="max-width:250px;border:2px solid #64FFDA;border-radius:10px;">`;
+    } else if (model !== "Unknown") {
+        imageFrame.innerHTML = "<p>Image not available for this model.</p>";
     }
 
     infoFrame.innerHTML = `
