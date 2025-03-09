@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(to bottom right, #1A237E, #311B92, #4A148C);
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+.main-container {
+    max-width: 900px;
+    min-height: 650px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to right, #6200EA, #304FFE);
+    border-radius: 15px;
+    border: 1px solid #7B1FA2;
+    padding: 10px 15px;
+    min-height: 80px;
+}
+.lightning { font-size: 24px; color: #FFEA00; }
+.logo { width: 80px; height: 80px; object-fit: contain; }
+.brand { font-size: 20px; font-weight: bold; color: #FFFFFF; margin-right: 15px; letter-spacing: 2px; }
+.website { font-size: 18px; font-weight: bold; color: #FFFFFF; text-decoration: underline; cursor: pointer; }
+.spacer { flex-grow: 1; }
+.telegram-btn {
+    width: 40px; height: 40px; background-color: #0088CC; border-radius: 20px; border: none; cursor: pointer;
+}
+.telegram-btn:hover { background-color: #0077B6; }
+.telegram-btn:active { background-color: #006699; }
+.telegram-icon { width: 30px; height: 30px; }
+
+/* Status Panel */
+.status-panel {
+    display: flex; align-items: center; background-color: rgba(26, 35, 126, 0.7);
+    border-radius: 10px; border: 1px solid #3F51B5; padding: 10px; margin-top: 15px;
+}
+.device-manager-btn {
+    background-color: #2196F3; border-radius: 10px; color: #FFFFFF; font-weight: bold;
+    padding: 10px; border: none; cursor: pointer; width: 120px; height: 40px;
+}
+.device-manager-btn:hover { background-color: #1976D2; }
+.device-manager-btn:active { background-color: #0D47A1; }
+.connection-indicator { font-size: 24px; color: #FF5252; }
+.connection-text { font-size: 12px; font-weight: bold; color: #B0BEC5; margin-left: 5px; }
+.operation-text { font-size: 12px; color: #64FFDA; }
+
+/* Content Area */
+.content-area { display: flex; gap: 15px; margin-top: 15px; }
+
+/* Left Panel */
+.left-panel {
+    flex: 1; background-color: rgba(49, 27, 146, 0.7); border-radius: 15px;
+    border: 1px solid #512DA8; padding: 15px;
+}
+.panel-header { text-align: center; font-size: 14px; font-weight: bold; color: #64FFDA; }
+.device-info-content {
+    display: flex; background-color: rgba(66, 66, 66, 0.4); border-radius: 10px;
+    border: 1px solid #7E57C2; padding: 15px; margin-top: 10px;
+}
+.image-frame { max-width: 300px; text-align: center; padding: 10px; }
+.info-frame { flex: 1; padding: 10px; }
+.progress-bar {
+    height: 20px; border: 1px solid #7E57C2; border-radius: 5px; background-color: rgba(66, 66, 66, 0.4);
+    margin-top: 10px; overflow: hidden;
+}
+.progress-bar::after {
+    content: ''; display: block; height: 100%; width: 0%;
+    background: linear-gradient(to right, #00BFA5, #64FFDA); transition: width 0.5s;
+}
+.commands { display: flex; gap: 10px; margin-top: 10px; }
+.refresh-btn, .reboot-btn {
+    flex: 1; padding: 10px; border-radius: 8px; color: #FFFFFF; font-weight: bold; cursor: pointer;
+    border: 1px solid #7E57C2;
+}
+.refresh-btn { background-color: #4527A0; }
+.refresh-btn:hover { background-color: #5E35B1; }
+.refresh-btn:active { background-color: #311B92; }
+.reboot-btn { background-color: #00BFA5; }
+.reboot-btn:hover { background-color: #00E5BF; }
+.reboot-btn:active { background-color: #008975; }
+
+/* Right Panel */
+.right-panel {
+    flex: 1; background-color: rgba(74, 20, 140, 0.7); border-radius: 15px;
+    border: 1px solid #6A1B9A; padding: 15px; display: flex; flex-direction: column;
+}
+.frp-header { font-size: 16px; color: #FF4081; }
+.frp-description { color: #B0BEC5; text-align: center; margin: 10px 0; }
+.key-label { font-size: 12px; font-weight: bold; color: #64FFDA; }
+#frpKeyInput {
+    width: 100%; padding: 15px; background-color: rgba(66, 66, 66, 0.4); border-radius: 10px;
+    border: 1px solid #7E57C2; color: #FFFFFF; font-size: 14px; margin-top: 5px;
+}
+#frpKeyInput:focus { border: 2px solid #FFC400; outline: none; }
+#unlockProgress::after {
+    background: linear-gradient(to right, #FF4081, #F50057);
+}
+.unlock-btn {
+    padding: 15px; background: linear-gradient(to right, #FF4081, #F50057); border-radius: 25px;
+    color: #FFFFFF; font-weight: bold; font-size: 14px; border: 1px solid #C51162; cursor: pointer;
+    margin-top: auto;
+}
+.unlock-btn:hover { background: linear-gradient(to right, #F50057, #C51162); }
+.unlock-btn:active { background: linear-gradient(to right, #C51162, #880E4F); }
+
+/* Bottom Status */
+.bottom-status { text-align: center; font-size: 10px; color: #B0BEC5; margin-top: 15px; }
+.copyright { text-align: center; color: #78909C; margin-top: 5px; }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HONOR FRP TOOL • BY BEUNLOCKER</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/gh/webadb/webadb.js@master/webadb.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <span class="lightning">⚡</span>
+            <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
+            <span class="logo-text" style="display:none;">Logo</span>
+            <span class="brand">BEUNLOCKER</span>
+            <a href="https://www.beunlocker.com" target="_blank" class="website">www.beunlocker.com</a>
+            <div class="spacer"></div>
+            <button class="telegram-btn" onclick="window.open('https://t.me/BenlockerNews', '_blank')">
+                <img src="telegram.png" alt="T" class="telegram-icon" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
+                <span style="display:none;">T</span>
+            </button>
+        </div>
+
+        <!-- Status Panel -->
+        <div class="status-panel">
+            <button class="device-manager-btn" onclick="alert('Device Manager is only available on desktop.')">Device Manager</button>
+            <span class="connection-indicator">•</span>
+            <span class="connection-text">AWAITING DEVICE CONNECTION</span>
+            <div class="spacer"></div>
+            <span class="operation-text">READY</span>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Left Panel (Device Info) -->
+            <div class="left-panel">
+                <h2 class="panel-header">DEVICE INFORMATION</h2>
+                <div class="device-info-content">
+                    <div class="image-frame" id="imageFrame"></div>
+                    <div class="info-frame" id="infoFrame">
+                        <p>No device connected.</p>
+                    </div>
+                </div>
+                <div class="progress-bar" id="connectionProgress"></div>
+                <div class="commands">
+                    <button class="refresh-btn" onclick="refreshDeviceInfo()">REFRESH</button>
+                    <button class="reboot-btn" onclick="rebootDevice()">REBOOT</button>
+                </div>
+            </div>
+
+            <!-- Right Panel (FRP Unlock) -->
+            <div class="right-panel">
+                <h2 class="panel-header frp-header">FRP UNLOCK</h2>
+                <p class="frp-description">Enter the FRP unlock key to remove Google account verification</p>
+                <label class="key-label">ENTER FRP KEY:</label>
+                <input type="text" id="frpKeyInput" placeholder="Enter FRP Key Here...">
+                <div class="progress-bar" id="unlockProgress" style="display:none;"></div>
+                <div class="spacer"></div>
+                <button class="unlock-btn" onclick="unlockFRP()">UNLOCK FRP PROTECTION</button>
+            </div>
+        </div>
+
+        <!-- Bottom Status -->
+        <p class="bottom-status">SYSTEM READY • WAITING FOR DEVICE CONNECTION</p>
+        <p class="copyright">© 2025 HONOR FRP TOOL BY BEUNLOCKER</p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
