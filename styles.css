@@ -1,141 +1,71 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
 
-.container {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    padding: 20px;
-    text-align: center;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HONOR FRP TOOL • BY BEUNLOCKER</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/gh/webadb/webadb.js@master/webadb.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <span class="lightning">⚡</span>
+            <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
+            <span class="logo-text" style="display:none;">Logo</span>
+            <span class="brand">BEUNLOCKER</span>
+            <a href="https://www.beunlocker.com" target="_blank" class="website">www.beunlocker.com</a>
+            <div class="spacer"></div>
+            <button class="telegram-btn" onclick="window.open('https://t.me/BenlockerNews', '_blank')">
+                <img src="telegram.png" alt="T" class="telegram-icon" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
+                <span style="display:none;">T</span>
+            </button>
+        </div>
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        <!-- Status Panel -->
+        <div class="status-panel">
+            <span class="connection-indicator">•</span>
+            <span class="connection-text">AWAITING DEVICE CONNECTION</span>
+            <div class="spacer"></div>
+            <span class="operation-text">READY</span>
+        </div>
 
-.telegram-icon, .logo {
-    width: 40px;
-    height: 40px;
-}
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Left Panel (Device Info) -->
+            <div class="left-panel">
+                <h2 class="panel-header">DEVICE INFORMATION</h2>
+                <div class="device-info-content">
+                    <div class="image-frame" id="imageFrame"></div>
+                    <div class="info-frame" id="infoFrame">
+                        <p>No device connected.</p>
+                    </div>
+                </div>
+                <div class="progress-bar" id="connectionProgress"></div>
+                <div class="commands">
+                    <button class="refresh-btn" onclick="refreshDeviceInfo()">REFRESH</button>
+                    <button class="reboot-btn" onclick="rebootDevice()">REBOOT</button>
+                </div>
+            </div>
 
-.status {
-    margin-bottom: 20px;
-    font-size: 18px;
-}
+            <!-- Right Panel (FRP Unlock) -->
+            <div class="right-panel">
+                <h2 class="panel-header frp-header">FRP UNLOCK</h2>
+                <p class="frp-description">Enter the FRP unlock key to remove Google account verification</p>
+                <label class="key-label">ENTER FRP KEY:</label>
+                <input type="text" id="frpKeyInput" placeholder="Enter FRP Key Here...">
+                <div class="progress-bar" id="unlockProgress" style="display:none;"></div>
+                <div class="spacer"></div>
+                <button class="unlock-btn" onclick="unlockFRP()">UNLOCK FRP PROTECTION</button>
+            </div>
+        </div>
 
-.connection-indicator {
-    margin-right: 5px;
-}
-
-.connection-text {
-    margin-right: 10px;
-}
-
-.progress-bar {
-    height: 5px;
-    background-color: #00E676;
-    border-radius: 5px;
-    margin-top: 5px;
-    transition: width 0.5s;
-}
-
-.device-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-#imageFrame, #infoFrame {
-    flex: 1;
-    text-align: left;
-}
-
-#imageFrame img {
-    margin-top: 10px;
-}
-
-.main-content {
-    margin-bottom: 20px;
-}
-
-.action-button {
-    background-color: #40C4FF;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.frp-button {
-    background-color: #00E676;
-}
-
-.action-button:hover {
-    opacity: 0.9;
-}
-
-.frp-section {
-    margin-top: 20px;
-}
-
-.frp-section h2 {
-    margin: 0 0 10px 0;
-    font-size: 20px;
-}
-
-.frp-section p {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-}
-
-#frpKeyInput {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.bottom-status {
-    font-size: 14px;
-    color: #B0BEC5;
-    margin-top: 20px;
-}
-
-.operation-text {
-    color: #00E676;
-}
-
-footer {
-    margin-top: 20px;
-    font-size: 12px;
-    color: #B0BEC5;
-}
-
-#fastbootInstructions {
-    text-align: left;
-    margin-top: 10px;
-    font-size: 12px;
-    color: #333;
-}
-
-#fastbootInstructions code {
-    background-color: #f0f0f0;
-    padding: 2px 5px;
-    border-radius: 3px;
-}
+        <!-- Bottom Status -->
+        <p class="bottom-status">SYSTEM READY • WAITING FOR DEVICE CONNECTION</p>
+        <p class="copyright">© 2025 HONOR FRP TOOL BY BEUNLOCKER</p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
