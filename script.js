@@ -82,13 +82,17 @@ let isConnected = false;
 // Function to connect to the device using WebUSB and ADB
 async function connectDevice() {
     try {
+        console.log("Attempting to open WebUSB...");
         let webusb = await Adb.open("WebUSB");
+        console.log("WebUSB opened, attempting to connect ADB...");
         adbInstance = await webusb.connectAdb("host::");
+        console.log("ADB connection established successfully.");
         isConnected = true;
         return true;
     } catch (e) {
         console.error("Connection error:", e);
         isConnected = false;
+        alert("Failed to connect to the device. Check console for details.");
         return false;
     }
 }
@@ -97,10 +101,16 @@ async function connectDevice() {
 async function getDeviceInfo() {
     if (!adbInstance) return { model: "Unknown", serial: "Unknown" };
     try {
+        console.log("Retrieving device model...");
         let shell = await adbInstance.shell("getprop ro.product.model");
         let model = (await shell.receive()).trim();
+        console.log("Model retrieved:", model);
+
+        console.log("Retrieving serial number...");
         shell = await adbInstance.shell("getprop ro.serialno");
         let serial = (await shell.receive()).trim();
+        console.log("Serial retrieved:", serial);
+
         return { model, serial };
     } catch (e) {
         console.error("Error getting device info:", e);
@@ -111,10 +121,12 @@ async function getDeviceInfo() {
 // Function to check device connection and update UI
 async function checkDeviceConnection() {
     if (isConnected) {
+        console.log("Device already connected, updating info...");
         updateDeviceInfo();
         return;
     }
 
+    console.log("Checking device connection...");
     const connected = await connectDevice();
     const indicator = document.querySelector(".connection-indicator");
     const text = document.querySelector(".connection-text");
@@ -261,5 +273,6 @@ async function executeFRPUnlock(frpKey) {
 
 // Automatically attempt to connect when the page loads
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("Page loaded, initiating connection check...");
     checkDeviceConnection();
 });
