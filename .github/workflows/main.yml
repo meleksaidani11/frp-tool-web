@@ -11,6 +11,7 @@ jobs:
     permissions:
       pages: write      # Required for deploying to GitHub Pages
       id-token: write   # Required for actions/deploy-pages
+      actions: write    # Ensure access to workflow artifacts
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -45,11 +46,15 @@ jobs:
           fi
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: github-pages
           path: ./
           retention-days: 1
+          if-no-files-found: error
+
+      - name: Delay for artifact availability
+        run: sleep 5
 
       - name: Deploy to GitHub Pages
         id: deployment
