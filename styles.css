@@ -39,12 +39,6 @@ body {
     display: flex; align-items: center; background-color: rgba(26, 35, 126, 0.7);
     border-radius: 10px; border: 1px solid #3F51B5; padding: 10px; margin-top: 15px;
 }
-.device-manager-btn {
-    background-color: #2196F3; border-radius: 10px; color: #FFFFFF; font-weight: bold;
-    padding: 10px; border: none; cursor: pointer; width: 120px; height: 40px;
-}
-.device-manager-btn:hover { background-color: #1976D2; }
-.device-manager-btn:active { background-color: #0D47A1; }
 .connection-indicator { font-size: 24px; color: #FF5252; }
 .connection-text { font-size: 12px; font-weight: bold; color: #B0BEC5; margin-left: 5px; }
 .operation-text { font-size: 12px; color: #64FFDA; }
