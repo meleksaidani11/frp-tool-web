@@ -1,4 +1,4 @@
-// Simulated device model aliases for Huawei and Honor devices
+// Simulated device model aliases for Huawei and Honor devices (unchanged)
 const MODEL_ALIASES = {
     "ANA-LX9": "Huawei P40",
     "ANA-NX9": "Huawei P40 Pro",
@@ -77,41 +77,43 @@ const MODEL_ALIASES = {
 };
 
 let isConnected = false;
-let deviceInfo = { model: "Unknown", serial: "Unknown" };
+let deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
 
-// Function to check if the device is in Fastboot mode (user confirmation)
+// Function to check if the device is in Fastboot/ADB mode using WebADB
 function checkFastbootDevice() {
-    return new Promise((resolve) => {
-        const isFastboot = confirm("Is your device in Fastboot mode? (Press OK if yes, Cancel if no)\nTo enter Fastboot mode:\n1. Power off your device.\n2. Hold Volume Down + Power until you see the bootloader.\n3. Connect the device to your computer via USB.");
-        if (isFastboot) {
-            console.log("User confirmed device is in Fastboot mode.");
-            isConnected = true;
-            // Simulate device info since we can't detect it in the browser
-            deviceInfo = { model: "Fastboot Device", serial: "FASTBOOT-12345" };
-            resolve(true);
-        } else {
-            console.log("Device not in Fastboot mode.");
-            isConnected = false;
-            resolve(false);
+    return new Promise((resolve, reject) => {
+        // Check if WebUSB is supported
+        if (!navigator.usb) {
+            alert("WebUSB is not supported in this browser. Please use Google Chrome or Microsoft Edge, and run the site on localhost.");
+            reject(new Error("WebUSB not supported"));
+            return;
         }
+
+        // Initialize WebADB
+        window.webadb.initialize()
+            .then(info => {
+                isConnected = true;
+                deviceInfo = info;
+                resolve(true);
+            })
+            .catch(error => {
+                isConnected = false;
+                deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
+                console.error("Device detection failed:", error);
+                reject(error);
+            });
     });
 }
 
-// Function to update the UI based on Fastboot connection
+// Function to update the UI based on device connection
 async function checkDeviceConnectionAndUpdate() {
-    if (isConnected) {
-        console.log("Device already connected, updating info...");
-        updateDeviceInfo();
-        return;
-    }
-
-    console.log("Checking Fastboot device...");
-    const connected = await checkFastbootDevice();
+    console.log("Checking for device...");
     const indicator = document.querySelector(".connection-indicator");
     const text = document.querySelector(".connection-text");
     const progress = document.querySelector("#connectionProgress");
 
-    if (connected) {
+    try {
+        await checkFastbootDevice();
         indicator.style.color = "#00E676";
         text.textContent = "FASTBOOT DEVICE DETECTED";
         text.style.color = "#00E676";
@@ -124,7 +126,11 @@ async function checkDeviceConnectionAndUpdate() {
             }
         }
         if (value === 100) updateDeviceInfo();
-    } else {
+    } catch (error) {
+        indicator.style.color = "#FF5252";
+        text.textContent = "NO FASTBOOT DEVICE DETECTED";
+        text.style.color = "#B0BEC5";
+        progress.style.width = "0%";
         resetUI();
     }
 }
@@ -139,7 +145,7 @@ function rebootToFastboot() {
 // Function to reset the UI to its initial state
 function resetUI() {
     isConnected = false;
-    deviceInfo = { model: "Unknown", serial: "Unknown" };
+    deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
     document.querySelector(".connection-indicator").style.color = "#FF5252";
     document.querySelector(".connection-text").textContent = "AWAITING FASTBOOT DEVICE";
     document.querySelector(".connection-text").style.color = "#B0BEC5";
@@ -161,10 +167,10 @@ function clearDeviceInfo() {
     infoFrame.innerHTML = "";
 }
 
-// Function to update the device info section with simulated data
+// Function to update the device info section with real data
 async function updateDeviceInfo() {
     clearDeviceInfo();
-    const { model, serial } = deviceInfo;
+    const { model, serial, mode } = deviceInfo;
     const imageFrame = document.getElementById("imageFrame");
     const infoFrame = document.getElementById("infoFrame");
 
@@ -172,23 +178,26 @@ async function updateDeviceInfo() {
         const commercialName = MODEL_ALIASES[model];
         const imageName = commercialName.replace(" ", "_").replace("+", "plus");
         imageFrame.innerHTML = `<img src="Honor_Images/${imageName}.png" alt="${commercialName}" style="max-width:250px;border:2px solid #64FFDA;border-radius:10px;">`;
+    } else if (model !== "Unknown") {
+        imageFrame.innerHTML = "<p>Image not available for this model.</p>";
     }
 
     infoFrame.innerHTML = `
         <div><label>Product Model:</label> ${model} <button onclick="navigator.clipboard.writeText('${model}')">Copy</button></div>
         ${MODEL_ALIASES[model] ? `<div><label>Commercial Name:</label> ${MODEL_ALIASES[model]} <button onclick="navigator.clipboard.writeText('${MODEL_ALIASES[model]}')">Copy</button></div>` : ""}
         <div><label>Serial Number:</label> ${serial} <button onclick="navigator.clipboard.writeText('${serial}')">Copy</button></div>
+        <div><label>Mode:</label> ${mode}</div>
     `;
-    document.querySelector(".bottom-status").textContent = "DEVICE INFO LOADED SUCCESSFULLY";
+    document.querySelector(".bottom-status").textContent = `DEVICE DETECTED IN ${mode.toUpperCase()} MODE`;
     setTimeout(() => document.querySelector(".bottom-status").textContent = "READY", 3000);
 }
 
-// Function to simulate the FRP unlock process
+// Function to simulate the FRP unlock process (unchanged)
 async function unlockFRP() {
     const frpKey = document.getElementById("frpKeyInput").value.trim();
     if (!frpKey) return alert("Please enter a valid FRP unlock key.");
     if (!isConnected) {
-        alert("No Fastboot device detected. Please ensure your device is in Fastboot mode and click 'CHECK FASTBOOT'.");
+        alert("No device detected. Please ensure your device is in Fastboot mode and connected, then use a Fastboot tool to unlock manually.");
         return;
     }
 
@@ -203,7 +212,7 @@ async function unlockFRP() {
     setTimeout(() => executeFRPUnlock(frpKey), 2500);
 }
 
-// Function to update the unlock progress bar
+// Function to update the unlock progress bar (unchanged)
 function updateUnlockProgress(value) {
     const progress = document.getElementById("unlockProgress");
     progress.style.width = `${value}%`;
@@ -214,7 +223,7 @@ function updateUnlockProgress(value) {
     else if (value === 80) status.textContent = "FINALIZING UNLOCK PROCEDURE...";
 }
 
-// Function to simulate FRP unlock and provide manual instructions
+// Function to simulate FRP unlock and provide manual instructions (unchanged)
 async function executeFRPUnlock(frpKey) {
     try {
         console.log("Simulating FRP unlock with key:", frpKey);
@@ -242,37 +251,9 @@ async function executeFRPUnlock(frpKey) {
     }
 }
 
-// Automatically check for a Fastboot device when the page loads
+// Event listener to trigger device check on button click
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Page loaded, initiating Fastboot device check...");
-    checkDeviceConnectionAndUpdate();
+    console.log("Page loaded, awaiting device check...");
+    resetUI(); // Ensure initial state is "awaiting"
+    document.querySelector("#checkFastbootBtn").addEventListener("click", checkDeviceConnectionAndUpdate);
 });
-// WebADB.js - Simple WebADB implementation for connecting to devices
-(async () => {
-    const connectButton = document.createElement("button");
-    connectButton.textContent = "Connect to Device";
-    document.body.appendChild(connectButton);
-
-    connectButton.addEventListener("click", async () => {
-        try {
-            // Request USB device using WebUSB API
-            const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x18D1 }] }); // Google/Nexus/Pixel devices
-            await device.open();
-            console.log("Device connected:", device);
-
-            // Display device information
-            const deviceInfo = document.createElement("p");
-            deviceInfo.textContent = `Connected to ${device.productName} (Vendor ID: ${device.vendorId})`;
-            document.body.appendChild(deviceInfo);
-
-            // Example: Run an ADB command (requires WebADB library implementation)
-            // This is a placeholder; actual ADB commands need a proper WebADB library
-            console.log("Device is ready for ADB/Fastboot commands.");
-        } catch (error) {
-            console.error("Error connecting to device:", error);
-            const errorMessage = document.createElement("p");
-            errorMessage.textContent = `Error: ${error.message}`;
-            document.body.appendChild(errorMessage);
-        }
-    });
-})();
