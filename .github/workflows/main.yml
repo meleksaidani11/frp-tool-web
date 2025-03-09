@@ -9,17 +9,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      pages: write      # Required for deploying to GitHub Pages
-      id-token: write   # Required for actions/deploy-pages
-      actions: write    # Ensure access to workflow artifacts
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: write  # Required to push to gh-pages branch
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for full Git context
+          fetch-depth: 0
 
       - name: Verify checkout and list files
         run: |
@@ -27,29 +22,15 @@ jobs:
           echo "Verifying repository checkout..."
           ls -la . || echo "No files in current directory"
           find . -type f || echo "No files found recursively"
-          git rev-parse --is-inside-work-tree || echo "Not inside a Git work tree"
-          git status || echo "Failed to run git status"
-          echo "Checking for specific files:"
-          ls -l index.html styles.css script.js logo.png telegram.png Honor_Images/ .nojekyll 2>/dev/null || echo "One or more required files missing"
-          echo "Listing .nojekyll content (should be empty):"
-          cat .nojekyll 2>/dev/null || echo ".nojekyll is empty or missing"
 
-      - name: Create .nojekyll if missing
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Deploy to gh-pages branch
         run: |
-          if [ ! -f .nojekyll ]; then
-            echo "Creating .nojekyll file..."
-            touch .nojekyll
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git config --global user.name "github-actions[bot]"
-            git add .nojekyll
-            git commit -m "Add .nojekyll for GitHub Pages" || echo "Commit failed, proceeding anyway"
-          fi
-
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v3
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b gh-pages
+          git add .
+          git commit -m "Deploy to GitHub Pages"
+          git push origin gh-pages --force
