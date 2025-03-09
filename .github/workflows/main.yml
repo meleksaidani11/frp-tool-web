@@ -28,7 +28,6 @@ jobs:
       - name: Determine working directory
         run: |
           echo "Current directory: $(pwd)"
-          echo "Repository path: $(pwd)"
           echo "Listing repository directory:"
           ls -la $(pwd)
           echo "Listing files to upload:"
@@ -39,13 +38,13 @@ jobs:
         with:
           name: github-pages
           path: |
-            $(pwd)/index.html
-            $(pwd)/styles.css
-            $(pwd)/script.js
-            $(pwd)/logo.png
-            $(pwd)/telegram.png
-            $(pwd)/Honor_Images/
-            $(pwd)/.nojekyll
+            ./index.html
+            ./styles.css
+            ./script.js
+            ./logo.png
+            ./telegram.png
+            ./Honor_Images/
+            ./.nojekyll
           if-no-files-found: error
 
       - name: Deploy to GitHub Pages
