@@ -82,14 +82,12 @@ let deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
 // Function to check if the device is in Fastboot/ADB mode using WebADB
 function checkFastbootDevice() {
     return new Promise((resolve, reject) => {
-        // Check if WebUSB is supported
         if (!navigator.usb) {
             alert("WebUSB is not supported in this browser or on this host. Please use Google Chrome or Microsoft Edge, and run the site on localhost (e.g., http://localhost:8000) with a local server.");
             reject(new Error("WebUSB not supported"));
             return;
         }
 
-        // Initialize WebADB
         window.webadb.initialize()
             .then(info => {
                 isConnected = true;
@@ -100,7 +98,7 @@ function checkFastbootDevice() {
             .catch(error => {
                 isConnected = false;
                 deviceInfo = { model: "Unknown", serial: "Unknown", mode: "Unknown" };
-                console.error("Device detection failed:", error);
+                console.error("Device detection failed:", error.message);
                 reject(error);
             });
     });
@@ -133,6 +131,7 @@ async function checkDeviceConnectionAndUpdate() {
         text.style.color = "#B0BEC5";
         progress.style.width = "0%";
         resetUI();
+        alert("No device detected. Please ensure your device is in Fastboot mode and connected, then use a Fastboot tool to unlock manually.");
     }
 }
 
@@ -155,7 +154,7 @@ function resetUI() {
     document.querySelector("#frpKeyInput").value = "";
     document.querySelector("#unlockProgress").style.display = "none";
     document.querySelector("#unlockProgress").style.width = "0%";
-    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR DEVICE CONNECTION";
+    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR FASTBOOT DEVICE";
     clearDeviceInfo();
     document.getElementById("fastbootInstructions").style.display = "none";
 }
