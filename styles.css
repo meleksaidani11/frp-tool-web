@@ -1,116 +1,123 @@
 body {
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    direction: rtl;
 }
 
 .container {
-    text-align: center;
     background: white;
-    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 400px;
+    padding: 20px;
+    text-align: center;
 }
 
-.logo img.telegram-logo {
-    max-width: 100px;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
+.telegram-icon, .logo {
+    width: 40px;
+    height: 40px;
+}
+
 .status {
-    margin: 10px 0;
+    margin-bottom: 20px;
     font-size: 18px;
 }
 
 .connection-indicator {
-    font-size: 20px;
     margin-right: 5px;
 }
 
 .connection-text {
-    color: #B0BEC5;
+    margin-right: 10px;
 }
 
 .progress-bar {
     height: 5px;
-    background-color: #64FFDA;
+    background-color: #00E676;
+    border-radius: 5px;
     margin-top: 5px;
     transition: width 0.5s;
 }
 
 .device-info {
-    margin: 20px 0;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.device-info div {
-    margin: 10px 0;
-}
-
-.device-info button {
-    margin-left: 5px;
-    padding: 2px 5px;
-    background-color: #64FFDA;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+#imageFrame, #infoFrame {
+    flex: 1;
+    text-align: left;
 }
 
 #imageFrame img {
-    max-width: 250px;
-    border: 2px solid #64FFDA;
-    border-radius: 10px;
+    margin-top: 10px;
 }
 
-.frp-unlock {
-    margin: 20px 0;
+.main-content {
+    margin-bottom: 20px;
 }
 
-.frp-unlock h2 {
+.action-button {
+    background-color: #40C4FF;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.frp-button {
+    background-color: #00E676;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+}
+
+.frp-section {
+    margin-top: 20px;
+}
+
+.frp-section h2 {
+    margin: 0 0 10px 0;
     font-size: 20px;
-    margin-bottom: 10px;
 }
 
-.frp-unlock p {
+.frp-section p {
+    margin: 0 0 10px 0;
     font-size: 14px;
-    color: #757575;
-    margin-bottom: 10px;
 }
 
-.frp-unlock input {
+#frpKeyInput {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-sizing: border-box;
-}
-
-.frp-unlock button {
-    width: 100%;
-    padding: 10px;
-    background-color: #00E676;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 .bottom-status {
+    font-size: 14px;
+    color: #B0BEC5;
     margin-top: 20px;
-    font-size: 12px;
-    color: #757575;
 }
 
 .operation-text {
-    margin-top: 10px;
-    font-size: 14px;
     color: #00E676;
 }
 
@@ -120,16 +127,15 @@ footer {
     color: #B0BEC5;
 }
 
-button {
-    padding: 10px;
-    background-color: #64FFDA;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
+#fastbootInstructions {
+    text-align: left;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #333;
 }
 
-button:hover {
-    background-color: #42A5F5;
+#fastbootInstructions code {
+    background-color: #f0f0f0;
+    padding: 2px 5px;
+    border-radius: 3px;
 }
