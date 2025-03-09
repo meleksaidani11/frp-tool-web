@@ -247,3 +247,32 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded, initiating Fastboot device check...");
     checkDeviceConnectionAndUpdate();
 });
+// WebADB.js - Simple WebADB implementation for connecting to devices
+(async () => {
+    const connectButton = document.createElement("button");
+    connectButton.textContent = "Connect to Device";
+    document.body.appendChild(connectButton);
+
+    connectButton.addEventListener("click", async () => {
+        try {
+            // Request USB device using WebUSB API
+            const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x18D1 }] }); // Google/Nexus/Pixel devices
+            await device.open();
+            console.log("Device connected:", device);
+
+            // Display device information
+            const deviceInfo = document.createElement("p");
+            deviceInfo.textContent = `Connected to ${device.productName} (Vendor ID: ${device.vendorId})`;
+            document.body.appendChild(deviceInfo);
+
+            // Example: Run an ADB command (requires WebADB library implementation)
+            // This is a placeholder; actual ADB commands need a proper WebADB library
+            console.log("Device is ready for ADB/Fastboot commands.");
+        } catch (error) {
+            console.error("Error connecting to device:", error);
+            const errorMessage = document.createElement("p");
+            errorMessage.textContent = `Error: ${error.message}`;
+            document.body.appendChild(errorMessage);
+        }
+    });
+})();
