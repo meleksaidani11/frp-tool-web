@@ -1,4 +1,4 @@
-// Simulated device model aliases for Huawei and Honor devices (unchanged)
+// Simulated device model aliases for Huawei and Honor devices
 const MODEL_ALIASES = {
     "ANA-LX9": "Huawei P40",
     "ANA-NX9": "Huawei P40 Pro",
@@ -84,7 +84,7 @@ function checkFastbootDevice() {
     return new Promise((resolve, reject) => {
         // Check if WebUSB is supported
         if (!navigator.usb) {
-            alert("WebUSB is not supported in this browser. Please use Google Chrome or Microsoft Edge, and run the site on localhost.");
+            alert("WebUSB is not supported in this browser or on this host. Please use Google Chrome or Microsoft Edge, and run the site on localhost (e.g., http://localhost:8000) with a local server.");
             reject(new Error("WebUSB not supported"));
             return;
         }
@@ -168,7 +168,7 @@ function clearDeviceInfo() {
 }
 
 // Function to update the device info section with real data
-async function updateDeviceInfo() {
+function updateDeviceInfo() {
     clearDeviceInfo();
     const { model, serial, mode } = deviceInfo;
     const imageFrame = document.getElementById("imageFrame");
@@ -192,7 +192,7 @@ async function updateDeviceInfo() {
     setTimeout(() => document.querySelector(".bottom-status").textContent = "READY", 3000);
 }
 
-// Function to simulate the FRP unlock process (unchanged)
+// Function to simulate the FRP unlock process
 async function unlockFRP() {
     const frpKey = document.getElementById("frpKeyInput").value.trim();
     if (!frpKey) return alert("Please enter a valid FRP unlock key.");
@@ -212,7 +212,7 @@ async function unlockFRP() {
     setTimeout(() => executeFRPUnlock(frpKey), 2500);
 }
 
-// Function to update the unlock progress bar (unchanged)
+// Function to update the unlock progress bar
 function updateUnlockProgress(value) {
     const progress = document.getElementById("unlockProgress");
     progress.style.width = `${value}%`;
@@ -223,7 +223,7 @@ function updateUnlockProgress(value) {
     else if (value === 80) status.textContent = "FINALIZING UNLOCK PROCEDURE...";
 }
 
-// Function to simulate FRP unlock and provide manual instructions (unchanged)
+// Function to simulate FRP unlock and provide manual instructions
 async function executeFRPUnlock(frpKey) {
     try {
         console.log("Simulating FRP unlock with key:", frpKey);
@@ -254,6 +254,7 @@ async function executeFRPUnlock(frpKey) {
 // Event listener to trigger device check on button click
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded, awaiting device check...");
-    resetUI(); // Ensure initial state is "awaiting"
+    resetUI();
     document.querySelector("#checkFastbootBtn").addEventListener("click", checkDeviceConnectionAndUpdate);
+    document.querySelector("#unlockBtn").addEventListener("click", unlockFRP);
 });
