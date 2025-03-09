@@ -1,74 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HONOR FRP TOOL • BY BEUNLOCKER</title>
+    <title>HONOR FRP Tool by BUNLOCKER</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="main-container">
-        <!-- Header -->
-        <div class="header">
-            <span class="lightning">⚡</span>
-            <img src="logo.png" alt="BeUnLocker Logo" class="logo" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
-            <span class="logo-text" style="display:none;">BeUnLocker Logo</span>
-            <span class="brand">BEUNLOCKER</span>
-            <a href="https://www.beunlocker.com" target="_blank" class="website">www.beunlocker.com</a>
-            <div class="spacer"></div>
-            <button class="telegram-btn" onclick="window.open('https://t.me/BenlockerNews', '_blank')">
-                <img src="telegram.png" alt="Telegram" class="telegram-icon" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
-                <span style="display:none;">T</span>
-            </button>
+    <div class="container">
+        <div class="logo">
+            <img src="telegram.png" alt="Telegram Logo" class="telegram-logo">
         </div>
-
-        <!-- Status Panel -->
-        <div class="status-panel">
-            <span class="connection-indicator">•</span>
+        <div class="status">
+            <span class="connection-indicator" style="color: #FF5252;">•</span>
             <span class="connection-text">AWAITING FASTBOOT DEVICE</span>
-            <div class="spacer"></div>
-            <span class="operation-text">READY</span>
+            <div id="connectionProgress" class="progress-bar" style="width: 0%;"></div>
         </div>
-
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Left Panel (Device Info) -->
-            <div class="left-panel">
-                <h2 class="panel-header">DEVICE INFORMATION</h2>
-                <div class="device-info-content">
-                    <div class="image-frame" id="imageFrame"></div>
-                    <div class="info-frame" id="infoFrame">
-                        <p>No device connected.</p>
-                    </div>
-                </div>
-                <div class="progress-bar" id="connectionProgress"></div>
-                <div class="commands">
-                    <button class="refresh-btn" onclick="checkFastbootDevice()">CHECK FASTBOOT</button>
-                    <button class="reboot-btn" onclick="rebootToFastboot()">REBOOT TO FASTBOOT</button>
-                </div>
-            </div>
-
-            <!-- Right Panel (FRP Unlock) -->
-            <div class="right-panel">
-                <h2 class="panel-header frp-header">FRP UNLOCK</h2>
-                <p class="frp-description">Enter the FRP unlock key to remove Google account verification</p>
-                <label class="key-label">ENTER FRP KEY:</label>
-                <input type="text" id="frpKeyInput" placeholder="Enter FRP Key Here...">
-                <div class="progress-bar" id="unlockProgress" style="display:none;"></div>
-                <div class="spacer"></div>
-                <button class="unlock-btn" onclick="unlockFRP()">UNLOCK FRP PROTECTION</button>
-                <div id="fastbootInstructions" style="display:none; margin-top: 10px; color: #B0BEC5; font-size: 12px;">
-                    <p>Manual Fastboot Command: <code>fastboot oem unlock [FRP_KEY]</code></p>
-                    <p>1. Install Fastboot on your computer (e.g., Android SDK Platform Tools).</p>
-                    <p>2. Open a terminal and navigate to the Fastboot directory.</p>
-                    <p>3. Connect your device in Fastboot mode and run the command above.</p>
-                </div>
-            </div>
+        <div class="device-info">
+            <div id="imageFrame"><p>No device connected.</p></div>
+            <div id="infoFrame"></div>
         </div>
-
-        <!-- Bottom Status -->
-        <p class="bottom-status">SYSTEM READY • WAITING FOR FASTBOOT DEVICE</p>
-        <p class="copyright">© 2025 HONOR FRP TOOL BY BEUNLOCKER</p>
+        <button id="checkFastbootBtn" onclick="rebootToFastboot()">CHECK FASTBOOT • REBOOT TO FASTBOOT</button>
+        <div class="frp-unlock">
+            <h2>FRP UNLOCK</h2>
+            <p>Enter the FRP unlock key to remove Google account verification</p>
+            <input type="text" id="frpKeyInput" placeholder="Enter FRP Key Here...">
+            <button onclick="unlockFRP()">UNLOCK FRP PROTECTION</button>
+            <div id="unlockProgress" class="progress-bar" style="display: none; width: 0%;"></div>
+        </div>
+        <div class="bottom-status">SYSTEM READY • WAITING FOR FASTBOOT DEVICE</div>
+        <div id="fastbootInstructions" style="display: none;"></div>
+        <div class="operation-text">READY</div>
+        <footer>© 2025 HONOR FRP TOOL BY BFUNLOCKER</footer>
     </div>
     <script src="script.js"></script>
 </body>
