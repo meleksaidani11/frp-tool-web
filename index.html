@@ -1,39 +1,47 @@
 <!DOCTYPE html>
-<html lang="ar">
-<script src="webadb.js"></script>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HONOR FRP Tool by BUNLOCKER</title>
+    <title>Honor FRP Tool by BFunlocker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <img src="telegram.png" alt="Telegram Logo" class="telegram-logo">
-        </div>
+        <header>
+            <img src="telegram.png" alt="Telegram" class="telegram-icon">
+            <img src="logo.png" alt="Logo" class="logo">
+        </header>
         <div class="status">
             <span class="connection-indicator" style="color: #FF5252;">•</span>
             <span class="connection-text">AWAITING FASTBOOT DEVICE</span>
             <div id="connectionProgress" class="progress-bar" style="width: 0%;"></div>
+            <p style="color: #FF5252; font-size: 14px;">Note: Device detection requires WebUSB, which is not supported on GitHub Pages. Please run this tool on <code>localhost</code> (e.g., http://localhost:8000) with a local server.</p>
         </div>
         <div class="device-info">
             <div id="imageFrame"><p>No device connected.</p></div>
             <div id="infoFrame"></div>
         </div>
-        <button id="checkFastbootBtn" onclick="rebootToFastboot()">CHECK FASTBOOT • REBOOT TO FASTBOOT</button>
-        <div class="frp-unlock">
-            <h2>FRP UNLOCK</h2>
-            <p>Enter the FRP unlock key to remove Google account verification</p>
-            <input type="text" id="frpKeyInput" placeholder="Enter FRP Key Here...">
-            <button onclick="unlockFRP()">UNLOCK FRP PROTECTION</button>
+        <div class="main-content">
+            <button id="checkFastbootBtn" class="action-button">CHECK FASTBOOT • REBOOT TO FASTBOOT</button>
+            <div class="frp-section">
+                <h2>FRP UNLOCK</h2>
+                <p>Enter the FRP unlock key to remove Google account verification</p>
+                <input type="text" id="frpKeyInput" placeholder="...Enter FRP Key Here">
+                <button id="unlockBtn" class="action-button frp-button">UNLOCK FRP PROTECTION</button>
+            </div>
             <div id="unlockProgress" class="progress-bar" style="display: none; width: 0%;"></div>
+            <div id="fastbootInstructions" style="display: none;"></div>
         </div>
-        <div class="bottom-status">SYSTEM READY • WAITING FOR FASTBOOT DEVICE</div>
-        <div id="fastbootInstructions" style="display: none;"></div>
-        <div class="operation-text">READY</div>
-        <footer>© 2025 HONOR FRP TOOL BY BFUNLOCKER</footer>
+        <div class="bottom-status">
+            SYSTEM READY • WAITING FOR FASTBOOT DEVICE
+            <span class="operation-text">READY</span>
+        </div>
+        <footer>
+            <p>Honor FRP Tool by BFunlocker 2025 ©</p>
+        </footer>
     </div>
+    <script src="webadb.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
