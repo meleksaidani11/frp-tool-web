@@ -45,17 +45,11 @@ jobs:
           fi
 
       - name: Upload artifact
-        id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: ./
-          if-no-files-found: error
-
-      - name: Verify upload artifact step
-        run: |
-          echo "Upload artifact step outcome: ${{ steps.upload-artifact.outcome }}"
-          echo "Upload artifact step outputs: ${{ steps.upload-artifact.outputs }}"
+          retention-days: 1
 
       - name: Deploy to GitHub Pages
         id: deployment
