@@ -94,6 +94,7 @@ function checkFastbootDevice() {
             .then(info => {
                 isConnected = true;
                 deviceInfo = info;
+                console.log("Device info detected:", info);
                 resolve(true);
             })
             .catch(error => {
@@ -154,7 +155,7 @@ function resetUI() {
     document.querySelector("#frpKeyInput").value = "";
     document.querySelector("#unlockProgress").style.display = "none";
     document.querySelector("#unlockProgress").style.width = "0%";
-    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR FASTBOOT DEVICE";
+    document.querySelector(".bottom-status").textContent = "SYSTEM READY • WAITING FOR DEVICE CONNECTION";
     clearDeviceInfo();
     document.getElementById("fastbootInstructions").style.display = "none";
 }
