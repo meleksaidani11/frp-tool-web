@@ -28,24 +28,24 @@ jobs:
       - name: Determine working directory
         run: |
           echo "Current directory: $(pwd)"
-          echo "Repository path: $(pwd)/frp-tool-web"
+          echo "Repository path: $(pwd)"
           echo "Listing repository directory:"
-          ls -la $(pwd)/frp-tool-web
+          ls -la $(pwd)
           echo "Listing files to upload:"
-          find $(pwd)/frp-tool-web -type f
+          find $(pwd) -type f
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: |
-            $(pwd)/frp-tool-web/index.html
-            $(pwd)/frp-tool-web/styles.css
-            $(pwd)/frp-tool-web/script.js
-            $(pwd)/frp-tool-web/logo.png
-            $(pwd)/frp-tool-web/telegram.png
-            $(pwd)/frp-tool-web/Honor_Images/
-            $(pwd)/frp-tool-web/.nojekyll
+            $(pwd)/index.html
+            $(pwd)/styles.css
+            $(pwd)/script.js
+            $(pwd)/logo.png
+            $(pwd)/telegram.png
+            $(pwd)/Honor_Images/
+            $(pwd)/.nojekyll
           if-no-files-found: error
 
       - name: Deploy to GitHub Pages
