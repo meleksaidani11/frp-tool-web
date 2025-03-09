@@ -16,13 +16,13 @@ body {
 .header {
     display: flex;
     align-items: center;
-    background: linear-gradient(to right, #6200EA, #304FFE); /* Adjusted to match blue tones in logo */
+    background: linear-gradient(to right, #6200EA, #304FFE);
     border-radius: 15px;
     border: 1px solid #7B1FA2;
     padding: 10px 15px;
     min-height: 80px;
 }
-.lightning { font-size: 24px; color: #FF9800; } /* Adjusted to match orange in logo */
+.lightning { font-size: 24px; color: #FF9800; }
 .logo { width: 80px; height: 80px; object-fit: contain; }
 .brand { font-size: 20px; font-weight: bold; color: #FFFFFF; margin-right: 15px; letter-spacing: 2px; }
 .website { font-size: 18px; font-weight: bold; color: #FFFFFF; text-decoration: underline; cursor: pointer; }
@@ -101,6 +101,11 @@ body {
 }
 .unlock-btn:hover { background: linear-gradient(to right, #F50057, #C51162); }
 .unlock-btn:active { background: linear-gradient(to right, #C51162, #880E4F); }
+#fastbootInstructions code {
+    background-color: rgba(66, 66, 66, 0.4);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
 
 /* Bottom Status */
 .bottom-status { text-align: center; font-size: 10px; color: #B0BEC5; margin-top: 15px; }
